@@ -852,7 +852,6 @@ def format_instruction(mnemonic: str, category: str, vd_rd: int, vs2: int,
 def disassemble_rvv(instruction: int) -> str:
 
     opcode, funct6, vm, vs2, vs1_rs1, funct3, vd_rd, imm5 = extract_fields(instruction)
-    print(f"opcode: {opcode}, funct6: {funct6}, vm: {vm}, vs2: {vs2}, vs1_rs1: {vs1_rs1}, funct3: {funct3}, vd_rd: {vd_rd}, imm5: {imm5}")
     
     if opcode == 0x07 or opcode == 0x27:
         return format_load_store(instruction, opcode, vd_rd, funct3, vs1_rs1, vm)
