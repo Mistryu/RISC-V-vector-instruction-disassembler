@@ -574,7 +574,7 @@ def get_load_store_mnemonic(opcode: int, width: int, mop: int, mew: int, nf: int
         0b110: "32",
         0b111: "64",
     }
-    print(f"width: {width}, mop: {mop}, mew: {mew}, nf: {nf}, lumop_sumop_rs2_vs2: {lumop_sumop_rs2_vs2}")
+
     eew = eew_map.get(width)
     if eew is None:
         return None
