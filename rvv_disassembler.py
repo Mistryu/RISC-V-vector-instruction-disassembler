@@ -264,14 +264,14 @@ def get_OPMVV_mnemonic(funct6: int, vs1: int) -> Tuple[Optional[str], bool]:
     }
     return (opcode_map.get(funct6), False)
 
-def get_OPMVX_mnemonic(funct6: int, vs1: int) -> Tuple[Optional[str], bool]:
+def get_OPMVX_mnemonic(funct6: int, vs2: int) -> Tuple[Optional[str], bool]:
  
     if funct6 == 0b010000:
         opcode_map = {
             # VRXUNARY0
             (0b010000, 0b00000): 'vmv.s.x',
         }
-        return (opcode_map.get((funct6, vs1)), True)
+        return (opcode_map.get((funct6, vs2)), True)
  
     opcode_map = {
         0b001000: 'vaaddu',
@@ -280,9 +280,6 @@ def get_OPMVX_mnemonic(funct6: int, vs1: int) -> Tuple[Optional[str], bool]:
         0b001011: 'vasub',
         0b001110: 'vslide1up',
         0b001111: 'vslide1down',
-        
-        # Should've been handeled earlier
-        0b010000: 'VRXUNARY0', 
         
         0b100000: 'vdivu',
         0b100001: 'vdiv',
@@ -409,14 +406,14 @@ def get_OPFVV_mnemonic(funct6: int, vs1: int) -> Tuple[Optional[str], bool]:
     return (opcode_map.get(funct6), False)
 
        
-def get_OPFVF_mnemonic(funct6: int, vs1: int) -> Tuple[Optional[str], bool]:
+def get_OPFVF_mnemonic(funct6: int, vs2: int) -> Tuple[Optional[str], bool]:
         
     if funct6 == 0b010000:
         opcode_map = {
             # VRFUNARY0
             (0b010000, 0b00000): 'vfmv.s.f'
         }
-        return (opcode_map.get((funct6, vs1)), True)
+        return (opcode_map.get((funct6, vs2)), True)
         
     opcode_map = { 
         0b000000: 'vfadd',
@@ -428,9 +425,6 @@ def get_OPFVF_mnemonic(funct6: int, vs1: int) -> Tuple[Optional[str], bool]:
         0b001010: 'vfsgnjx',
         0b001110: 'vfslide1up',
         0b001111: 'vfslide1down',
-        
-        #TODO Handle unary ops separately later
-        0b010000: 'VRFUNARY0',
         
         0b010111: 'vfmerge',
         0b011000: 'vmfeq', 
@@ -492,11 +486,11 @@ def get_mnemonic(funct6: int, category: str, vs2: int, vs1_rs1: int) -> Tuple[Op
     elif category == 'OPMVV':
         return get_OPMVV_mnemonic(funct6, vs1_rs1)
     elif category == 'OPMVX':
-        return get_OPMVX_mnemonic(funct6, vs1_rs1)
+        return get_OPMVX_mnemonic(funct6, vs2)
     elif category == 'OPFVV':
         return get_OPFVV_mnemonic(funct6, vs1_rs1)
     elif category == 'OPFVF':
-        return get_OPFVF_mnemonic(funct6, vs1_rs1)
+        return get_OPFVF_mnemonic(funct6, vs2)
     elif category == 'OPCFG':
         return get_config_mnemonic(funct6, vs2, vs1_rs1)
     return None, False
