@@ -58,6 +58,7 @@ def get_OPIVV_mnemonic(funct6: int) -> Tuple[Optional[str], bool]:
         0b001010: 'vor',
         0b001011: 'vxor',
         0b001100: 'vrgather',
+        0b001110: 'vrgatherei16',
         
         0b010000: 'vadc',
         0b010001: 'vmadc',
@@ -160,14 +161,17 @@ def get_OPIVI_mnemonic(funct6: int) -> Tuple[Optional[str], bool]:
         0b010111: 'vmerge',
         0b011000: 'vmseq',
         0b011001: 'vmsne',
-        0b011010: 'vmsleu',
-        0b011011: 'vmsle',
+        0b011100: 'vmsleu',
+        0b011101: 'vmsle',
         0b011110: 'vmsgtu',
         0b011111: 'vmsgt',
         
         0b100000: 'vsaddu',
         0b100001: 'vsadd',
         0b100101: 'vsll',
+        
+        0b100111: 'vmv',
+        
         0b101000: 'vsrl',
         0b101001: 'vsra',
         0b101010: 'vssrl',
@@ -177,8 +181,11 @@ def get_OPIVI_mnemonic(funct6: int) -> Tuple[Optional[str], bool]:
         0b101110: 'vnclipu',
         0b101111: 'vnclip'
     }
+    mnemonic = opcode_map.get(funct6)
+    if mnemonic == 'vmv':
+        return (mnemonic, True)
     
-    return (opcode_map.get(funct6), False)
+    return (mnemonic, False)
 
 
 def get_OPMVV_mnemonic(funct6: int, vs1: int) -> Tuple[Optional[str], bool]:
@@ -477,6 +484,7 @@ def get_config_mnemonic(funct6: int, vs2: int, vs1_rs1: int) -> Tuple[Optional[s
 
 def get_mnemonic(funct6: int, category: str, vs2: int, vs1_rs1: int) -> Tuple[Optional[str], bool]:
 
+    print(f"Debug: funct6={funct6:06b}, category={category}, vs2={vs2:05b}, vs1_rs1={vs1_rs1:05b}")
     if category == 'OPIVV':
         return get_OPIVV_mnemonic(funct6)
     elif category == 'OPIVX':
@@ -808,6 +816,9 @@ def format_instruction(mnemonic: str, category: str, vd_rd: int, vs2: int,
             else:
                 return f"{mnemonic} v{vd_rd}"
             
+        elif mnemonic == 'vmv':
+                nr = vs1_rs1 + 1
+                return f"{mnemonic}{nr}r.v v{vd_rd}, v{vs2}"
         else:
             return f"{mnemonic} v{vd_rd}, v{vs2}"
     
@@ -835,9 +846,9 @@ def format_instruction(mnemonic: str, category: str, vd_rd: int, vs2: int,
 
     elif category == 'OPFVF':
         if vm == 0:
-            return f"{full_mnemonic} v{vd_rd}, v{vs2}, f{vs1_rs1}, v0.t"
+            return f"{full_mnemonic} v{vd_rd}, v{vs2}, x{vs1_rs1}, v0.t"
         else:
-            return f"{full_mnemonic} v{vd_rd}, v{vs2}, f{vs1_rs1}"
+            return f"{full_mnemonic} v{vd_rd}, v{vs2}, x{vs1_rs1}"
     
     else:
         return "UNKNOWN FORMAT"
