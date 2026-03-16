@@ -484,7 +484,6 @@ def get_config_mnemonic(funct6: int, vs2: int, vs1_rs1: int) -> Tuple[Optional[s
 
 def get_mnemonic(funct6: int, category: str, vs2: int, vs1_rs1: int) -> Tuple[Optional[str], bool]:
 
-    print(f"Debug: funct6={funct6:06b}, category={category}, vs2={vs2:05b}, vs1_rs1={vs1_rs1:05b}")
     if category == 'OPIVV':
         return get_OPIVV_mnemonic(funct6)
     elif category == 'OPIVX':
